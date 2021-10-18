@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  dns:
+    container_name: dns
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      LISTEN_ADDR: :8080
+      DATABASE_MAX_CONN: 3
+      DATABASE_DSN: postgres://atlas:123456@db:5432/dns?sslmode=disable
+  db:
+    container_name: db
+    image: postgres:11-alpine
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: atlas
+      POSTGRES_DB: dns
+    ports:
+      - "5432:5432"
