@@ -38,6 +38,10 @@ func Initialize(logger *logrus.Logger, dsn string, maxConn int32) (Storage, erro
 	}, nil
 }
 
+func (s Storage) RetrieveSectorByID() {
+
+}
+
 func (s Storage) Close() {
 	if s.pool == nil {
 		return

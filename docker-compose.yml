@@ -4,7 +4,7 @@ services:
     container_name: dns
     build: .
     ports:
-      - "8080:8080"
+      - "8080:8094"
     depends_on:
       - db
     environment:
@@ -19,4 +19,4 @@ services:
       POSTGRES_USER: atlas
       POSTGRES_DB: dns
     ports:
-      - "5432:5432"
+      - "5432:8087"

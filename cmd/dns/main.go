@@ -15,7 +15,7 @@ import (
 
 func main() {
 	log := logger.Initialize()
-	log.Info("Starting")
+	log.Info("Atlas Drone Navigation Service start")
 
 	cfg := config.StartupConfig{}
 	if err := envconfig.Process("", &cfg); err != nil {
