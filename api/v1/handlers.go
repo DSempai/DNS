@@ -12,25 +12,29 @@ func LocateDatabankHandler(logger *logrus.Logger, dns domain.DroneNavigation) fu
 	return func(w http.ResponseWriter, r *http.Request) {
 		rawBody, err := io.ReadAll(r.Body)
 		if err != nil {
-			logger.Infof("Error during reading request body with error: %v", err)
+			logger.Infof("Reading request body failed. Error: %v", err)
+			BadRequestResponse(w, err)
+			return
 		}
 
-		var requestData LocateDatabankRequest
+		var requestData domain.DroneCoordinates
 		if err = json.Unmarshal(rawBody, &requestData); err != nil {
-			logger.Infof("Error unmarshalling request body: %v", err)
+			logger.Infof("Unmarshalling request body failed. Error: %v", err)
+			BadRequestResponse(w, err)
+			return
 		}
 
-		_, err = dns.LocateDatabankByCoordinates(domain.DroneCoordinates{
+		response, err := dns.LocateDatabankByCoordinates(domain.DroneCoordinates{
 			X:   requestData.X,
 			Y:   requestData.Y,
 			Z:   requestData.Z,
-			Vel: requestData.Vel,
-		})
+			Vel: requestData.Vel}, domain.ID)
 		if err != nil {
-			logger.Infof("Error during calulate location with error: %v", err)
-			//	todo a methods for response marshaler for response too
+			logger.Infof("Locate databank failed. Error: %v", err)
+			NotFoundResponse(w, err)
+			return
 		}
 
-		w.WriteHeader(http.StatusOK)
+		OKResponse(w, response)
 	}
 }

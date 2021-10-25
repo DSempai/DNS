@@ -8,29 +8,26 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type Storage struct {
+type Service struct {
 	logger       *logrus.Logger
 	pool         *pgxpool.Pool
 	dsn          string
 	queryBuilder squirrel.StatementBuilderType
 }
 
-func Initialize(logger *logrus.Logger, dsn string, maxConn int32) (Storage, error) {
+func Initialize(logger *logrus.Logger, dsn string, maxConn int32) (Service, error) {
 	conf, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
-		return Storage{}, err
+		return Service{}, err
 	}
 	conf.MaxConns = maxConn
 	pg, err := pgxpool.ConnectConfig(context.Background(), conf)
-
 	if err != nil {
-		err = fmt.Errorf("error during creating storagedb connection: %w", err)
-		return Storage{}, err
+		return Service{}, fmt.Errorf("create db connection failed. Error: %w", err)
 	}
-
 	statementBuilder := squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
 
-	return Storage{
+	return Service{
 		logger:       logger,
 		pool:         pg,
 		dsn:          dsn,
@@ -38,11 +35,7 @@ func Initialize(logger *logrus.Logger, dsn string, maxConn int32) (Storage, erro
 	}, nil
 }
 
-func (s Storage) RetrieveSectorByID() {
-
-}
-
-func (s Storage) Close() {
+func (s Service) Close() {
 	if s.pool == nil {
 		return
 	}

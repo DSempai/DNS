@@ -17,7 +17,7 @@ func main() {
 	log := logger.Initialize()
 	log.Info("Atlas Drone Navigation Service start")
 
-	cfg := config.StartupConfig{}
+	cfg := config.StartupConfigDNS{}
 	if err := envconfig.Process("", &cfg); err != nil {
 		log.Info(err)
 		os.Exit(1)
@@ -27,8 +27,8 @@ func main() {
 		return cfg
 	}))
 
-	httpServer, closer := bootstrapServer(log, cfg)
-	defer closer()
+	httpServer, dbClose := bootstrapServer(log, cfg)
+	defer dbClose()
 
 	errChan := make(chan error, 1)
 	go func() {
@@ -41,9 +41,9 @@ func main() {
 
 	select {
 	case sig := <-sigChan:
-		log.Debug("Caught signal", sig)
+		log.Debug("Caught signal: ", sig)
 	case err := <-errChan:
-		log.Info("Error listen and serve:", err)
+		log.Info("Listen and serve failed. Error:", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)

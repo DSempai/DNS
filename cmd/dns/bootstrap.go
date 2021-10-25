@@ -18,14 +18,14 @@ type Handlers struct {
 	Methods []string
 }
 
-func bootstrapServer(logger *logrus.Logger, config config.StartupConfig) (*http.Server, func()) {
-	store, err := storage.Initialize(logger, config.DatabaseDSN, config.DatabaseMaxConn)
+func bootstrapServer(logger *logrus.Logger, config config.StartupConfigDNS) (*http.Server, func()) {
+	storeService, err := storage.Initialize(logger, config.DatabaseDSN, config.DatabaseMaxConn)
 	if err != nil {
-		logger.Error("Error creating storage service:", err)
+		logger.Error("Creating storage service fail, Error:", err)
 		os.Exit(1)
 	}
-	calculatorService := calculator.Initialize(logger)
-	nabigationService := navigator.Initialize(logger, store, calculatorService)
+	calculatorService := calculator.Initialize()
+	navigationService := navigator.Initialize(logger, storeService, calculatorService)
 
 	rootRouter := mux.NewRouter()
 	routerApi := rootRouter.PathPrefix("/api").Subrouter()
@@ -34,7 +34,7 @@ func bootstrapServer(logger *logrus.Logger, config config.StartupConfig) (*http.
 	handlersV1 := []Handlers{
 		{
 			URL:     "/locate_databank",
-			Func:    api.LocateDatabankHandler(logger, nabigationService),
+			Func:    api.LocateDatabankHandler(logger, navigationService),
 			Methods: []string{http.MethodPost},
 		},
 	}
@@ -47,6 +47,6 @@ func bootstrapServer(logger *logrus.Logger, config config.StartupConfig) (*http.
 			Addr:    config.ListenAddr,
 			Handler: rootRouter,
 		}, func() {
-			store.Close()
+			storeService.Close()
 		}
 }
