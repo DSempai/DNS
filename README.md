@@ -35,7 +35,7 @@ When command executed, you can pretend yourself as a drone and do a request:
 ```
 We know, it looks ugly, but our drones doesn't dream about electric sheeps.
 
-Request must contain 4 parameters and must be provided as string representation of floating point number:
+Request must contain 4 parameters, and they must be provided as string representation of floating point number:
 - **X axis coordinate** 
 - **Y axis coordinate** 
 - **Z axis coordinate** 
