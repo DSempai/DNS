@@ -1,3 +1,6 @@
+// Copyright (C) 2218 Atlas Corporation - All Rights Reserved.
+// Use of this software without a license will result in an intergalactic government investigation.
+// The license can be obtained from the Galactic Government Services branch on Vogsphere.
 package main
 
 import (
@@ -6,31 +9,30 @@ import (
 	"DNS/repository/storage"
 	"DNS/service/calculator"
 	"DNS/service/navigator"
-	"github.com/gorilla/mux"
-	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 )
 
-type Handlers struct {
-	URL     string
-	Func    func(http.ResponseWriter, *http.Request)
-	Methods []string
-}
-
+// bootstrapServer initialize program services, register routes and return *http.Server instance.
 func bootstrapServer(logger *logrus.Logger, config config.StartupConfigDNS) (*http.Server, func()) {
+	// Initialize service that we need
 	storeService, err := storage.Initialize(logger, config.DatabaseDSN, config.DatabaseMaxConn)
 	if err != nil {
 		logger.Error("Creating storage service fail, Error:", err)
 		os.Exit(1)
 	}
 	calculatorService := calculator.Initialize()
-	navigationService := navigator.Initialize(logger, storeService, calculatorService)
+	navigationService := navigator.Initialize(logger, storeService, calculatorService, config.SectorID)
 
+	// Create routers/subrouters
 	rootRouter := mux.NewRouter()
-	routerApi := rootRouter.PathPrefix("/api").Subrouter()
-	routerV1 := routerApi.PathPrefix("/v1").Subrouter()
+	routerAPI := rootRouter.PathPrefix("/api").Subrouter()
+	routerV1 := routerAPI.PathPrefix("/v1").Subrouter()
 
+	// Register all handlers
 	handlersV1 := []Handlers{
 		{
 			URL:     "/locate_databank",
@@ -49,4 +51,11 @@ func bootstrapServer(logger *logrus.Logger, config config.StartupConfigDNS) (*ht
 		}, func() {
 			storeService.Close()
 		}
+}
+
+// Handlers created and used to register new paths and handler functions with specified methods.
+type Handlers struct {
+	URL     string
+	Func    func(http.ResponseWriter, *http.Request)
+	Methods []string
 }

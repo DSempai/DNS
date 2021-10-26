@@ -1,10 +1,12 @@
 package logger
 
 import (
-	"github.com/sirupsen/logrus"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
+// Initialize return new logging instance.
 func Initialize() *logrus.Logger {
 	return &logrus.Logger{
 		Out:       os.Stderr,

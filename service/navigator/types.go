@@ -3,7 +3,8 @@ package navigator
 import "errors"
 
 var (
-	ErrParseParameter = errors.New("can't parse incoming parameter")
+	ErrParseParameter = errors.New("can't parse provided parameter")
+	ErrEmptyParameter = errors.New("parameter is empty")
 	ErrSectorNotFound = errors.New("sector was not found by the provided parameters")
 )
 

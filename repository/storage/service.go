@@ -3,11 +3,14 @@ package storage
 import (
 	"context"
 	"fmt"
+
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/sirupsen/logrus"
 )
 
+// Service provides all the necessary tools to work with the database entity
+// and implement interface of the database tables : storage.SectorsInterface, ...
 type Service struct {
 	logger       *logrus.Logger
 	pool         *pgxpool.Pool
@@ -15,6 +18,8 @@ type Service struct {
 	queryBuilder squirrel.StatementBuilderType
 }
 
+// Initialize connect to database with provided configuration, invoke query builder
+// and return Service entity. Provide instruments to work with database.
 func Initialize(logger *logrus.Logger, dsn string, maxConn int32) (Service, error) {
 	conf, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
@@ -35,6 +40,7 @@ func Initialize(logger *logrus.Logger, dsn string, maxConn int32) (Service, erro
 	}, nil
 }
 
+// Close connection pool.
 func (s Service) Close() {
 	if s.pool == nil {
 		return

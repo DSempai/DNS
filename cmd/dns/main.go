@@ -1,3 +1,6 @@
+// Copyright (C) 2218 Atlas Corporation - All Rights Reserved.
+// Use of this software without a license will result in an intergalactic government investigation.
+// The license can be obtained from the Galactic Government Services branch on Vogsphere.
 package main
 
 import (
@@ -15,7 +18,7 @@ import (
 
 func main() {
 	log := logger.Initialize()
-	log.Info("Atlas Drone Navigation Service start")
+	log.Info("Atlas corp. Drone Navigation Service start")
 
 	cfg := config.StartupConfigDNS{}
 	if err := envconfig.Process("", &cfg); err != nil {
@@ -49,5 +52,8 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
-	httpServer.Shutdown(ctx)
+	if err := httpServer.Shutdown(ctx); err != nil {
+		log.Info(err)
+		os.Exit(1)
+	}
 }

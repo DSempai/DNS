@@ -8,11 +8,12 @@ services:
     ports:
       - "8090:8090"
     depends_on:
-      - db
+      - migrator
     environment:
       LISTEN_ADDR: :8090
       DATABASE_MAX_CONN: 3
       DATABASE_DSN: postgres://atlas:123456@db:5432/dns?sslmode=disable
+      SECTOR_ID: 1
   migrator:
     container_name: migrator
     build:

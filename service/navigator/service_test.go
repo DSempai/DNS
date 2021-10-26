@@ -7,12 +7,12 @@ import (
 	"DNS/repository/storage/mock"
 	"DNS/service/calculator"
 	"DNS/service/navigator"
-	"github.com/jackc/pgx/v4"
 	"reflect"
 	"testing"
 	"time"
-)
 
+	"github.com/jackc/pgx/v4"
+)
 
 func TestService_locate(t *testing.T) {
 	tests := []struct {
@@ -68,7 +68,7 @@ func TestService_locate(t *testing.T) {
 	}
 	s := navigator.Service{
 		Logger:     nil,
-		Sectors:   nil,
+		Sectors:    nil,
 		Calculator: calculator.Service{},
 	}
 	for _, tt := range tests {
@@ -104,9 +104,20 @@ func TestService_ConvertCoordinates(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "convertion failed",
+			name: "convertation failed",
 			coordinates: domain.DroneCoordinates{
 				X:   "1.1s",
+				Y:   "2.2",
+				Z:   "3.3",
+				Vel: "4.4",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "parameter is empty",
+			coordinates: domain.DroneCoordinates{
+				X:   "",
 				Y:   "2.2",
 				Z:   "3.3",
 				Vel: "4.4",
@@ -120,6 +131,7 @@ func TestService_ConvertCoordinates(t *testing.T) {
 		Sectors:    nil,
 		Calculator: calculator.Service{},
 	}
+	t.Parallel()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := s.ConvertCoordinates(tt.coordinates)
@@ -136,12 +148,12 @@ func TestService_ConvertCoordinates(t *testing.T) {
 
 func TestService_LocateDatabankByCoordinates(t *testing.T) {
 	tests := []struct {
-		name    string
-		sectors storage.SectorsInterface
+		name     string
+		sectors  storage.SectorsInterface
 		coords   domain.DroneCoordinates
 		sectorID domain.SectorID
-		want    *domain.DatabankLocation
-		wantErr bool
+		want     *domain.DatabankLocation
+		wantErr  bool
 	}{
 		{
 			name: "success",
@@ -152,7 +164,7 @@ func TestService_LocateDatabankByCoordinates(t *testing.T) {
 					CreatedAt: time.Now(),
 					Active:    true,
 				},
-				Err:    nil,
+				Err: nil,
 			},
 			coords: domain.DroneCoordinates{
 				X:   "1.1",
@@ -179,7 +191,7 @@ func TestService_LocateDatabankByCoordinates(t *testing.T) {
 				Vel: "4.4",
 			},
 			sectorID: domain.SectorID(1),
-			want:  func() *domain.DatabankLocation {
+			want: func() *domain.DatabankLocation {
 				return nil
 			}(),
 			wantErr: true,
@@ -197,22 +209,23 @@ func TestService_LocateDatabankByCoordinates(t *testing.T) {
 				Vel: "",
 			},
 			sectorID: domain.SectorID(1),
-			want:  func() *domain.DatabankLocation {
+			want: func() *domain.DatabankLocation {
 				return nil
 			}(),
 			wantErr: true,
 		},
 	}
-
+	t.Parallel()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := navigator.Service{
 				Logger:     logger.Initialize(),
 				Sectors:    tt.sectors,
 				Calculator: calculator.Initialize(),
+				SectorID:   tt.sectorID,
 			}
 
-			got, err := s.LocateDatabankByCoordinates(tt.coords, tt.sectorID)
+			got, err := s.LocateDatabankByCoordinates(tt.coords)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LocateDatabankByCoordinates() error = %v, wantErr %v", err, tt.wantErr)
 				return

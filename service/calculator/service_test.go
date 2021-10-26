@@ -43,6 +43,7 @@ func TestService_Multiply(t *testing.T) {
 			want:         144,
 		},
 	}
+	t.Parallel()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := calculator.Service{}
@@ -80,6 +81,7 @@ func TestService_AdditionFloat64(t *testing.T) {
 			want:    1.111111,
 		},
 	}
+	t.Parallel()
 	s := calculator.Service{}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
