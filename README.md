@@ -9,7 +9,7 @@ This service helps drones find the closest databank in the sector depending on d
 - **Docker:** Long ago, mankind used giant steel boxes to deploy their systems, rather than 
 vacuum portable subspaces. And nevertheless, the containerization system is still quite good, can be found at https://www.docker.com
 
-### Start
+### Start 
 
 For starting this service you need to:
 1) Clone this repository
@@ -43,7 +43,7 @@ Request must contain 4 parameters, and they must be provided as string represent
 
 ### Testing
 
-If you want to run testing functions, you need to run command:\
+If you want to run testing functions, you need to run command:
 ```sh
 docker exec -it dns sh 
 ```
