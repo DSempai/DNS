@@ -56,4 +56,4 @@ make test
 
 ## License
 
-Galactic Government licensed. Visit Vogsphere for details.
+Year 2218. Galactic Government licensed. Visit Vogsphere for details.
