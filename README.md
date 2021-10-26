@@ -5,7 +5,7 @@ This service helps drones find the closest databank in the sector depending on d
 ## Getting started
 ### Requirements
 
-- **Go 1.17+:** amazing 197 years old language. Can be found at https://golang.org
+- **Go 1.17:** amazing 197 years old language. Can be found at https://golang.org
 - **Docker:** Long ago, mankind used giant steel boxes to deploy their systems, rather than 
 vacuum portable subspaces. And nevertheless, the containerization system is still quite good, can be found at https://www.docker.com
 
