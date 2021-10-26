@@ -49,7 +49,7 @@ docker exec -it dns sh
 ```
 
 After that you will be teleported inside container where application is stored.
-And all you need to do is run another command:\
+And all you need to do is run another command:
 ```sh
 make test
 ```
