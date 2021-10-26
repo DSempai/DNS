@@ -15,12 +15,15 @@ For starting this service you need to:
 1) Clone this repository
 2) Open directory with project
 3) Execute a command :
-`docker-compose up --build -d`
+```sh
+docker-compose up --build -d
+```
 
 When command executed, you can pretend yourself as a drone and do a request:
 
 
->curl --request POST \
+```sh
+ curl --request POST \
 --url http://localhost:8090/api/v1/locate_databank \
 --header 'Content-Type: application/json' \
 --data '{
@@ -29,7 +32,7 @@ When command executed, you can pretend yourself as a drone and do a request:
 "z": "123.13",
 "vel": "55.3424"
 }
-
+```
 We know, it looks ugly, but our drones doesn't dream about electric sheeps.
 
 Request must contain 4 parameters and must be provided as string representation of floating point number:
@@ -41,8 +44,16 @@ Request must contain 4 parameters and must be provided as string representation 
 ### Testing
 
 If you want to run testing functions, you need to run command:\
-``docker exec -it dns sh``
+```sh
+docker exec -it dns sh 
+```
 
 After that you will be teleported inside container where application is stored.
 And all you need to do is run another command:\
-``make test``
+```sh
+make test
+```
+
+## License
+
+Galactic Government licensed. Visit Vogsphere for details.
