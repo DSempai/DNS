@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  dns:
+    container_name: dns
+    build:
+      context: .
+      dockerfile: Dockerfile.dns
+    ports:
+      - "8090:8090"
+    depends_on:
+      - migrator
+    environment:
+      LISTEN_ADDR: :8090
+      DATABASE_MAX_CONN: 3
+      DATABASE_DSN: postgres://atlas:123456@db:5432/dns?sslmode=disable
+      SECTOR_ID: 1
+  migrator:
+    container_name: migrator
+    build:
+      context: .
+      dockerfile: Dockerfile.migrator
+    depends_on:
+      - db
+    environment:
+      DATABASE_DSN: postgres://atlas:123456@db:5432/dns?sslmode=disable
+      MIGRATION_PATH: file:///app/migrations
+      CONNECT_RETRY_TIME: 2s
+  db:
+    container_name: db
+    image: postgres:11-alpine
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: atlas
+      POSTGRES_DB: dns
+    ports:
+      - "5432:5432"
